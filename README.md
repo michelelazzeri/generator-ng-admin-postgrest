@@ -8,9 +8,9 @@ Scaffold an [ng-admin](https://github.com/marmelab/ng-admin) application generat
 
 Download [Postgrest](https://github.com/begriffs/postgrest/releases) 
 
-Install `yo`, `grunt-cli`, `bower`:
+Install `yo`, `grunt-cli`, `bower`, `generator-ng-admin-postgrest`:
 ```
-npm install -g yo grunt-cli bower 
+npm install -g yo grunt-cli bower generator-ng-admin-postgrest
 ```
 
 Make a new directory, and `cd` into it:
