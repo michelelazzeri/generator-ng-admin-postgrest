@@ -1,0 +1,32 @@
+{
+  "name": "generator-ng-admin-postgrest",
+  "version": "0.1.0",
+  "description": "ng-admin + PostgREST Yeoman generator",
+  "license": "BSD-2-Clause",
+  "main": "app/index.js",
+  "repository": "michelelazzeri/generator-ng-admin-postgrest",
+  "author": {
+    "name": "Michele Lazzeri",
+    "email": "info@michelelazzeri.com",
+    "url": "https://github.com/michelelazzeri"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "generators"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "yeoman-generator": "^0.19.0",
+    "chalk": "^1.0.0",
+    "yosay": "^1.0.2",
+    "synchronize": "0.9.14",
+    "pg": "4.4.2"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}

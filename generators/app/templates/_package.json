@@ -1,0 +1,12 @@
+{
+  "name": "<%= appname %>",
+  "description": "the <%= appname %> application generate by ng-admin-postgrest Yoeman generator",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-shell": "~1.1.2",
+    "grunt-http-server": "~1.13.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-uglify": "~0.5.0"
+  }
+}
