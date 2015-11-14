@@ -2,7 +2,6 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
-var sync = require('synchronize');
 var pg = require('pg');
 var path = require('path');
 
@@ -226,16 +225,16 @@ module.exports = yeoman.generators.Base.extend({
 			this.fs.copyTpl(this.templatePath('_Gruntfile.js'), this.destinationPath('Gruntfile.js'), this.props);
 		},
 
-		projectfiles: function () {
-			this.fs.copy(
-				this.templatePath('editorconfig'),
-				this.destinationPath('.editorconfig')
-			);
-			this.fs.copy(
-				this.templatePath('jshintrc'),
-				this.destinationPath('.jshintrc')
-			);
-		}
+//		projectfiles: function () {
+//			this.fs.copy(
+//				this.templatePath('editorconfig'),
+//				this.destinationPath('.editorconfig')
+//			);
+//			this.fs.copy(
+//				this.templatePath('jshintrc'),
+//				this.destinationPath('.jshintrc')
+//			);
+//		}
 	},
 
 	install: function () {
