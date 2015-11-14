@@ -1,0 +1,7 @@
+.editorconfig
+.jshintrc
+.project
+.settings/
+.travis.yml
+.yo-rc.json
+node_modules/
