@@ -1,11 +1,13 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
-	 
+	
+		<% if (postgrestStartServerLocally === true) {%>	
 	    shell: {
 	    	postgrest: {
 	            command: '<%= postgrestCommand %> --db-host <%= dbHost %> --db-port <%= dbPort %> --db-name <%= dbName %> --db-user <%= dbUser %> --db-pass <%=dbPassword%> --db-pool 200 --anonymous postgres --port <%=postgrestPort%>  --v1schema <%=dbSchema%>'
 	        }
 	    },
+	    <%} %>
 
 	    jshint: {
 	        all: ['Gruntfile.js', 'main.js']
@@ -65,5 +67,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	
 	grunt.registerTask('default', ['jshint']);
-	grunt.registerTask('serve', ['http-server', 'shell:postgrest']);	
+	grunt.registerTask('serve', ['http-server' <% if (postgrestStartServerLocally === true) {%>, 'shell:postgrest'<%} %>]);	
 };

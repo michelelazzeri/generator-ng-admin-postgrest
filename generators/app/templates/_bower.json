@@ -2,8 +2,5 @@
   "name": "<%= appname %>",
   "dependencies": {
     "ng-admin": "*"
-  },
-  "resolutions": {
-    "angular": "~1.3.1"
   }
 }

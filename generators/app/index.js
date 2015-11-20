@@ -3,6 +3,7 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 var pg = require('pg');
+var fs = require('fs');
 var path = require('path');
 
 module.exports = yeoman.generators.Base.extend({
@@ -19,35 +20,55 @@ module.exports = yeoman.generators.Base.extend({
 		dbConf: function () {
 			var self = this;
 			var done = this.async();
-	
+			
 			// Have Yeoman greet the user.
 			this.log(yosay(
 					'Welcome to the superior ' + chalk.red('NgAdminPostgrest') + ' generator for ' + chalk.green(this.appname)
 			));
+			
+			// Set defaults
+			this.config.defaults(
+					{
+					     dbHost: "localhost",
+					     dbPort: "5432",
+					     dbUser: "postgres",
+					     dbPassword: "postgres",
+					     dbName: "mydb",
+					     dbSchema: "public",
+					     postgrestStartServerLocally: true,
+  				         postgrestCommand: "/usr/local/bin/postgrest",
+					     postgrestIP: "127.0.0.1",
+					     postgrestPort: "3000",
+					     httpdIP: "127.0.0.1",
+					     httpdPort: "3001",		
+					}
+			);
+			
+			// Propt database connection data
 			var prompts = [
 			               {
 			            	   type: 'input',
 			            	   name: 'dbHost',
 			            	   message: 'Type the database hostname',
-			            	   'default': 'localhost'
+			            	   'default': this.config.get('dbHost')
 			               },
 			               {
 			            	   type: 'input',
 			            	   name: 'dbPort',
 			            	   message: 'Type the database port',
-			            	   'default': '5432'
+			            	   'default': this.config.get('dbPort')
 			               },
 			               {
 			            	   type: 'input',
 			            	   name: 'dbUser',
 			            	   message: 'Type the database user',
-			            	   'default': 'postgres'
+			            	   'default': this.config.get('dbUser')
 			               },
 			               {
 			            	   type: 'password',
 			            	   name: 'dbPassword',
 			            	   message: 'Type the database pasword',
-			            	   'default': 'postgres'
+			            	   'default': this.config.get('dbPassword')
 			               },
 			               {
 			            	   type: 'input',
@@ -60,20 +81,28 @@ module.exports = yeoman.generators.Base.extend({
 		            			   return true;
 			            	   },
 			            	   message: 'Type the database name',
-			            	   'default': 'mydb'
+			            	   'default': this.config.get('dbName')
 			               },
 			               {
 			            	   type: 'input',
 			            	   name: 'dbSchema',
 			            	   message: 'Type the database schema',
-			            	   'default': 'public'
+			            	   'default': this.config.get('dbSchema')
 			               },
 			               ];
 			this.prompt(prompts, function (props) {
 				this.props = props;
-				
+
+				this.config.set('dbUser',props.dbUser);
+				this.config.set('dbPassword',props.dbPassword);
+				this.config.set('dbHost',props.dbHost);
+				this.config.set('dbPort',props.dbPort);
+				this.config.set('dbName',props.dbName);
+				this.config.set('dbSchema',props.dbSchema);
+
 				this.props.conString = 'postgres://'+props.dbUser+':'+props.dbPassword+'@'+props.dbHost+':'+props.dbPort+'/'+props.dbName;
 
+				// Load the table list
 				self.props.tables = [];
 				pg.connect(this.props.conString, function(err, client, pgDone) {
 				  if(err) {return self.log(chalk.red('error connecting to postres, check connection parameters. ' + err));}
@@ -92,6 +121,8 @@ module.exports = yeoman.generators.Base.extend({
 		dbTables: function() {
 			var self = this;
 			var done = this.async();
+			
+			// Select the tables
 			var prompts = [
 			               {
 			            	   type: 'checkbox',
@@ -110,7 +141,8 @@ module.exports = yeoman.generators.Base.extend({
 			var self = this;
 			var done = this.async();
    		    self.props.tableColumns = {};
-			
+
+   		    // Load che column names
    		    pg.connect(this.props.conString, function(err, client, pgDone) {
 				  if(err) {return self.log(chalk.red('error connecting to postres, check connection parameters. ' + err));}
    		    	client.query('SELECT table_name, column_name, udt_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = ANY($2::name[]) order by ordinal_position', 
@@ -134,6 +166,7 @@ module.exports = yeoman.generators.Base.extend({
 			var done = this.async();
    		    self.props.tablePKs = {};
 			
+   		    // Load the primary keys
    		    pg.connect(this.props.conString, function(err, client, pgDone) {
 				if(err) {return self.log(chalk.red('error connecting to postres, check connection parameters. ' + err));}
    		    	client.query('SELECT ' +
@@ -155,13 +188,37 @@ module.exports = yeoman.generators.Base.extend({
    		    			else {
    		    				return self.log(chalk.red('not allowed multiple field primary key of table ' + row.table_name));
    		    			}
-   		    			//self.props.tablePKs[row.table_name].push(row);
    		    		}
    		    		done();
    		    	});
    		    });
 		},
-		postgrest: function() {
+		postgrestStartServerLocally: function() {
+			var self = this;
+			var done = this.async();
+			
+			// Ask if postgrest must run locally
+			var prompts = [
+			               {
+				         	   type: 'confirm',
+				         	   name: 'postgrestStartServerLocally',
+				         	   message: 'start PostgREST server locally?',
+			            	   'default': this.config.get('postgrestStartServerLocally')
+				            },
+			               ];
+			this.prompt(prompts, function (props) {
+				this.props.postgrestStartServerLocally = props.postgrestStartServerLocally;
+				this.config.set('postgrestStartServerLocally',props.postgrestStartServerLocally);
+				done();
+			}.bind(this));			
+		},
+		postgrestCommand: function() {
+			
+			if (!this.props.postgrestStartServerLocally) {
+				this.config.delete('postgrestCommand');
+				return;
+			}
+			
 			var self = this;
 			var done = this.async();
 			var prompts = [
@@ -169,25 +226,41 @@ module.exports = yeoman.generators.Base.extend({
 				         	   type: 'input',
 				         	   name: 'postgrestCommand',
 				         	   message: 'type the PostgREST fullpath command',
-				         	   'default': '/usr/local/bin/postgrest'
+			            	   'default': this.config.get('postgrestCommand')
 				            },
+			               ];
+			this.prompt(prompts, function (props) {
+				this.props.postgrestCommand = props.postgrestCommand;
+
+				this.config.set('postgrestCommand',props.postgrestCommand);
+				
+				done();
+			}.bind(this));			
+		},
+		postgrestConfig: function() {
+			var self = this;
+			var done = this.async();
+			var prompts = [
 			               {
 			            	   type: 'input',
 			            	   name: 'postgrestIP',
 			            	   message: 'type the PostgREST server IP',
-			            	   'default': '127.0.0.1'
+			            	   'default': this.config.get('postgrestIP')
 			               },
 			               {
 			            	   type: 'input',
 			            	   name: 'postgrestPort',
 			            	   message: 'type the PostgREST port',
-			            	   'default': '3000'
+			            	   'default': this.config.get('postgrestPort')
 			               },
 			               ];
 			this.prompt(prompts, function (props) {
-				this.props.postgrestCommand = props.postgrestCommand;
 				this.props.postgrestIP = props.postgrestIP;
 				this.props.postgrestPort = props.postgrestPort;
+
+				this.config.set('postgrestIP',props.postgrestIP);
+				this.config.set('postgrestPort',props.postgrestPort);
+				
 				done();
 			}.bind(this));			
 		},
@@ -199,18 +272,22 @@ module.exports = yeoman.generators.Base.extend({
 			            	   type: 'input',
 			            	   name: 'httpdIP',
 			            	   message: 'type the HTTP server IP',
-			            	   'default': '127.0.0.1'
+			            	   'default': this.config.get('httpdIP')
 			               },
 			               {
 			            	   type: 'input',
 			            	   name: 'httpdPort',
 			            	   message: 'type the HTTP server port',
-			            	   'default': '3001'
+			            	   'default': this.config.get('httpdPort')
 			               },
 			               ];
 			this.prompt(prompts, function (props) {
 				this.props.httpdIP = props.httpdIP;
 				this.props.httpdPort = props.httpdPort;
+
+				this.config.set('httpdIP',props.httpdIP);
+				this.config.set('httpdPort',props.httpdPort);
+				
 				done();
 			}.bind(this));			
 		},
@@ -223,6 +300,13 @@ module.exports = yeoman.generators.Base.extend({
 			this.fs.copyTpl(this.templatePath('_index.html'), this.destinationPath('index.html'), this.props);
 			this.fs.copyTpl(this.templatePath('_main.js'), this.destinationPath('main.js'), this.props);
 			this.fs.copyTpl(this.templatePath('_Gruntfile.js'), this.destinationPath('Gruntfile.js'), this.props);
+			try {
+				fs.statSync(this.destinationPath('lib'));
+			}
+			catch (e) {
+				fs.mkdirSync(this.destinationPath('lib'));				
+			}
+			this.fs.copy(this.templatePath('lib/ng-admin-postgrest.js'), this.destinationPath('lib/ng-admin-postgrest.js'), this.props);
 		},
 
 //		projectfiles: function () {
