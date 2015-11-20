@@ -1,12 +1,12 @@
 # ng-admin PostgREST Generator
 
-> Yeoman generator for ng-admin and PostgREST.
+> Yeoman generator for ng-admin + PostgREST.
 
-Scaffold an [ng-admin](https://github.com/marmelab/ng-admin) application generated on an existing [PostgreSQL](http://www.postgresql.org) database exposed via [PostgREST](https://github.com/begriffs/postgrest) 
+Scaffold an [ng-admin](https://github.com/marmelab/ng-admin) application generated on an existing [PostgreSQL](http://www.postgresql.org) database exposed via [PostgREST](https://github.com/begriffs/postgrest).
 
 ## Usage
 
-Download [PostgrREST](https://github.com/begriffs/postgrest/releases) 
+Download [PostgREST](https://github.com/begriffs/postgrest/releases) 
 
 Install `yo`, `grunt-cli`, `bower`, `generator-ng-admin-postgrest`:
 ```
@@ -22,7 +22,11 @@ Run `yo ng-admin-postgrest`, optionally passing an app name:
 ```
 yo ng-admin-postgrest [app-name]
 ```
-Run `grunt` for building and `grunt serve` for preview
+Run `grunt serve` for preview. 
+
+## Requirements
+
+a PostgresQL database  with a user credentials for access `information_schema` catalog
 
 ## Credits
 
