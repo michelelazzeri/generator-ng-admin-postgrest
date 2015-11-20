@@ -1,6 +1,6 @@
 {
   "name": "generator-ng-admin-postgrest",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "ng-admin + PostgREST Yeoman generator",
   "license": "BSD-2-Clause",
   "main": "app/index.js",
