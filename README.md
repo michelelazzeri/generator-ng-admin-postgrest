@@ -2,7 +2,9 @@
 
 > Yeoman generator for ng-admin + PostgREST.
 
-Scaffold an [ng-admin](https://github.com/marmelab/ng-admin) application generated on an existing [PostgreSQL](http://www.postgresql.org) database exposed via [PostgREST](https://github.com/begriffs/postgrest).
+Scaffold an [ng-admin](https://github.com/marmelab/ng-admin) web application generated on an existing [PostgreSQL](http://www.postgresql.org) database exposed via [PostgREST](https://github.com/begriffs/postgrest).
+
+**ng-admin PostgREST Generator** explore your PostgreSQL database, detecting tables and automagically generate ng-admin entities.
 
 ## Usage
 
@@ -22,7 +24,43 @@ Run `yo ng-admin-postgrest`, optionally passing an app name:
 ```
 yo ng-admin-postgrest [app-name]
 ```
-Run `grunt serve` for preview. 
+
+Generator will ask you:
+- database connection
+- which entities generate
+- postrest configuration
+- http server configuration
+
+Start the http and postgrest server for preview. 
+```
+grunt
+grunt serve
+```
+
+## Structure
+
+The application structure follow the official Yeoman `generator-angular`
+
+```
+├── bower.json
+├── Gruntfile.js
+├── package.json
+├── postgrest.json
+├── app
+│   ├── index.html
+│   ├── app.js
+│   ├── favicon.ico
+│   ├── scripts
+│   │   ├── entities
+│   │   │   ├── <entity 1>.js
+│   │   │   ├── <entity 2>.js
+│   │   │   ├── <entity 3>.js
+│   │   ├── ng-admin-postgrest
+│   │   │   ├── config.js
+│   │   │   ├── provider.js
+│   │   ├── styles
+│   │   │   ├── main.scss
+```
 
 ## Requirements
 
@@ -34,6 +72,7 @@ a PostgresQL database  with a user credentials for access `information_schema` c
 - Based on 
   - [ng-admin](https://github.com/marmelab/ng-admin) 
   - [PostgREST](https://github.com/begriffs/postgrest)
+  - [generator-angular](https://github.com/yeoman/generator-angular)
 
 ## License
 

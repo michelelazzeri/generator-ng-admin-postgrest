@@ -297,28 +297,48 @@ module.exports = yeoman.generators.Base.extend({
 			this.props.appname = this.appname;
 			this.fs.copyTpl(this.templatePath('_package.json'), this.destinationPath('package.json'), this.props);
 			this.fs.copyTpl(this.templatePath('_bower.json'), this.destinationPath('bower.json'), this.props);
-			this.fs.copyTpl(this.templatePath('_index.html'), this.destinationPath('index.html'), this.props);
-			this.fs.copyTpl(this.templatePath('_main.js'), this.destinationPath('main.js'), this.props);
-			this.fs.copyTpl(this.templatePath('_Gruntfile.js'), this.destinationPath('Gruntfile.js'), this.props);
-			try {
-				fs.statSync(this.destinationPath('lib'));
-			}
-			catch (e) {
-				fs.mkdirSync(this.destinationPath('lib'));				
-			}
-			this.fs.copy(this.templatePath('lib/ng-admin-postgrest.js'), this.destinationPath('lib/ng-admin-postgrest.js'), this.props);
-		},
+			this.fs.copyTpl(this.templatePath('_README.md'), this.destinationPath('README.md'), this.props);
+			this.fs.copy(this.templatePath('Gruntfile.js'), this.destinationPath('Gruntfile.js'));
+			this.fs.copyTpl(this.templatePath('_postgrest.json'), this.destinationPath('postgrest.json'), this.props);
+			
+			try { fs.statSync(this.destinationPath('app'));}
+			catch (e) {fs.mkdirSync(this.destinationPath('app'));}
 
-//		projectfiles: function () {
-//			this.fs.copy(
-//				this.templatePath('editorconfig'),
-//				this.destinationPath('.editorconfig')
-//			);
-//			this.fs.copy(
-//				this.templatePath('jshintrc'),
-//				this.destinationPath('.jshintrc')
-//			);
-//		}
+			this.fs.copyTpl(this.templatePath('app/_index.html'), this.destinationPath('app/index.html'), this.props);
+
+			this.fs.copy(this.templatePath('app/favicon.ico'), this.destinationPath('app/favicon.ico'));
+			
+			this.fs.copy(this.templatePath('.jshintrc'), this.destinationPath('.jshintrc'));
+
+			try { fs.statSync(this.destinationPath('app/styles'));}
+			catch (e) {fs.mkdirSync(this.destinationPath('app/styles'));}
+
+			this.fs.copy(this.templatePath('app/styles/main.scss'), this.destinationPath('app/styles/main.scss'));
+
+			try { fs.statSync(this.destinationPath('app/scripts'));}
+			catch (e) {fs.mkdirSync(this.destinationPath('app/scripts'));}
+
+			this.fs.copyTpl(this.templatePath('app/scripts/_app.js'), this.destinationPath('app/scripts/app.js'), this.props);
+
+			try { fs.statSync(this.destinationPath('app/scripts/ng-admin-postgrest'));}
+			catch (e) {fs.mkdirSync(this.destinationPath('app/scripts/ng-admin-postgrest'));}
+
+			this.fs.copy(this.templatePath('app/scripts/ng-admin-postgrest/config.js'), this.destinationPath('app/scripts/ng-admin-postgrest/config.js'));
+			this.fs.copy(this.templatePath('app/scripts/ng-admin-postgrest/provider.js'), this.destinationPath('app/scripts/ng-admin-postgrest/provider.js'));
+
+			try { fs.statSync(this.destinationPath('app/scripts/entities'));}
+			catch (e) {fs.mkdirSync(this.destinationPath('app/scripts/entities'));}
+			
+			for (var i in this.props.tables) {
+				var table = this.props.tables[i];
+				var tableProps = {
+						table: table,			
+						tableKey: this.props.tablePKs[table],
+						columns: this.props.tableColumns[table]
+				}
+				this.fs.copyTpl(this.templatePath('app/scripts/entities/_entity.js'), this.destinationPath('app/scripts/entities/'+table+'.js'), tableProps);
+			}
+		},
 	},
 
 	install: function () {

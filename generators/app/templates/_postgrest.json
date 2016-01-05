@@ -1,0 +1,13 @@
+{ 
+    "command": "<%=postgrestCommand%>", 
+    "port": "<%=postgrestPort%>",
+    "database": {
+        "hostname": "<%=dbHost%>",
+        "port": "<%=dbPort%>",
+        "name": "<%=dbName%>",
+        "user":"<%=dbUser%>",
+        "schema":"<%=dbSchema%>",
+        "password":"<%=dbPassword%>",
+        "poolSize": "20"
+    }
+}
