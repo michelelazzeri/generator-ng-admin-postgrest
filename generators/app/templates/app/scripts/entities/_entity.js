@@ -30,7 +30,10 @@ angular.module('ngAdminPostgrestApp')
 		
 		    table.editionView()
 		    .fields(table.creationView().fields());        
-		
+		    
+            // postgrest version >= 3.0.0, use PATH instead PUT for update.
+		    table.updateMethod('patch');
+
 		    return table;
 		};
 		

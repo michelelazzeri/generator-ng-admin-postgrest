@@ -380,7 +380,7 @@ module.exports = function (grunt) {
           bg: true
         },
     	postgrest: {
-			cmd: "<%=yeoman.postgrest.command%> --db-host <%=yeoman.postgrest.database.hostname%> --db-port <%=yeoman.postgrest.database.port%>  --db-name <%=yeoman.postgrest.database.name%> --db-user <%=yeoman.postgrest.database.user%>  --db-pass <%=yeoman.postgrest.database.password%> --db-pool <%=yeoman.postgrest.database.poolSize%>  --port <%=yeoman.postgrest.port%>  -a <%=yeoman.postgrest.database.user%> --v1schema <%=yeoman.postgrest.database.schema%> "
+			cmd: "<%=yeoman.postgrest.command%> postgres://<%=yeoman.postgrest.database.user%>:<%=yeoman.postgrest.database.password%>@<%=yeoman.postgrest.database.hostname%>:<%=yeoman.postgrest.database.port%>/<%=yeoman.postgrest.database.name%>  --pool <%=yeoman.postgrest.database.poolSize%>  --port <%=yeoman.postgrest.port%>  -a <%=yeoman.postgrest.database.user%> --schema <%=yeoman.postgrest.database.schema%> "
         }
     },
     
